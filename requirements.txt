@@ -1,0 +1,9 @@
+einops==0.8.0
+PuLP==2.9.0
+numpy>=1.26.4
+pandas>=2.2.2
+scipy
+transformers
+matplotlib
+shapely
+timm

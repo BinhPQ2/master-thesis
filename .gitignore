@@ -207,6 +207,8 @@ marimo/_lsp/
 __marimo__/
 
 # Ignore everything in data/ except for .gitkeep
+models/*
+results/*
 data/*
-!data/.gitkeep
+!**/.gitkeep
 .vscode/
