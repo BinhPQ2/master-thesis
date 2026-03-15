@@ -37,3 +37,11 @@ To keep the code clean and consistent, use [Black](https://black.readthedocs.io/
 ```
 black {source_file_or_directory}
 ```
+
+## Environment Structure
+
+- Use `master-thesis-magi-v2` to run magi v2 pipeline.
+- Use `easyocr-vietocr` for any task requires easyocr or vietocr.
+- Use `paddleocr` to run PaddleOCR pipeline.
+
+## File Structure
