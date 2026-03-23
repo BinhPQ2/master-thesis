@@ -38,6 +38,12 @@ To keep the code clean and consistent, use [Black](https://black.readthedocs.io/
 black {source_file_or_directory}
 ```
 
+or
+
+```
+python -m black {source_file_or_directory}
+```
+
 ## Environment Structure
 
 - Use `master-thesis-magi-v2` to run magi v2 pipeline.
