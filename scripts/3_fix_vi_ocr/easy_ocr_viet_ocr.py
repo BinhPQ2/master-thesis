@@ -133,13 +133,16 @@ def process_chapter(chapter_path):
 
     output_dir.mkdir(exist_ok=True)
 
-    # ✅ Resume check
     if is_chapter_processed(json_output_dir, output_dir):
         return "⏭️ Skipped"
 
     json_files = list(json_output_dir.glob("*.json"))
 
-    for json_file in json_files:
+    for json_file in tqdm(
+        json_files,
+        desc=f"📄 {chapter_path.name}",
+        leave=False
+    ):
         process_json_file(json_file, cut_bubbles_dir, output_dir)
 
     return "✅ Done"

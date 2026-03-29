@@ -124,7 +124,11 @@ async def process_chapter(chapter_path):
 
     json_files = list(json_output_dir.glob("*.json"))
 
-    for json_file in json_files:
+    for json_file in tqdm(
+        json_files,
+        desc=f"📄 {chapter_path.name}",
+        leave=False
+    ):
         await process_json_file(json_file, cut_bubbles_dir, output_dir)
 
     return "✅ Done"
@@ -178,3 +182,5 @@ async def main():
 # -------------------------------
 if __name__ == "__main__":
     asyncio.run(main())
+
+# D:/miniconda3/envs/easyocr-vietocr/python.exe d:/Downloads/Tu_Lieu/Cao_Hoc/Master_Thesis/master-thesis/scripts/3_fix_vi_ocr/google_lens.py
