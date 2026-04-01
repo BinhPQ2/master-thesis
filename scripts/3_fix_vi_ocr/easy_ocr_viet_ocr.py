@@ -138,11 +138,7 @@ def process_chapter(chapter_path):
 
     json_files = list(json_output_dir.glob("*.json"))
 
-    for json_file in tqdm(
-        json_files,
-        desc=f"📄 {chapter_path.name}",
-        leave=False
-    ):
+    for json_file in tqdm(json_files, desc=f"📄 {chapter_path.name}", leave=False):
         process_json_file(json_file, cut_bubbles_dir, output_dir)
 
     return "✅ Done"
