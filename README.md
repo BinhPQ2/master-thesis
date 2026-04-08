@@ -2,6 +2,10 @@
 
 This repository contains code and resources for my master thesis project.
 
+## Command to update requirement file
+
+`pip list --format=freeze > requirements.txt`
+
 ## Environment
 
 - **CUDA version:** 12.9
@@ -51,3 +55,5 @@ python -m black {source_file_or_directory}
 - Use `paddleocr` to run PaddleOCR pipeline.
 
 ## File Structure
+
+- TODO

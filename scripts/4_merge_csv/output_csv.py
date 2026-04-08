@@ -17,8 +17,8 @@ from datetime import datetime
 # -------------------------------
 # OUTPUT DIR
 # -------------------------------
-CSV_OUTPUT_DIR = Path(RESULT_DIR) / CSV_OUTPUT_DIR
-CSV_OUTPUT_DIR.mkdir(exist_ok=True)
+CSV_OUTPUT = Path(RESULT_DIR) / CSV_OUTPUT
+CSV_OUTPUT.mkdir(exist_ok=True)
 
 
 # -------------------------------
@@ -163,7 +163,7 @@ def main():
     df = pd.DataFrame(all_rows)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     saved_csv_name = f"en_vi_dialogues_{timestamp}.csv"
-    output_path = CSV_OUTPUT_DIR / saved_csv_name
+    output_path = CSV_OUTPUT / saved_csv_name
     df.to_csv(output_path, index=False, encoding="utf-8-sig")
 
     print(f"\n✅ CSV saved to: {output_path}")
