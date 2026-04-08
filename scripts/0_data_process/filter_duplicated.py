@@ -12,6 +12,7 @@ import shutil
 from tqdm import tqdm
 import cv2
 import numpy as np
+
 try:
     import imagehash
 except Exception:
@@ -21,13 +22,14 @@ try:
     from skimage.metrics import structural_similarity as ssim
 except Exception:
     ssim = None
-
+LOG_FILE = Path(TEST_DATA_UNDUPED_DIR) / "log.txt"
 
 # -------------------------------
 # CONFIG (TUNE HERE)
 # -------------------------------
 SSIM_THRESHOLD = 0.75
-HIST_CORRELATION_THRESHOLD = 0.95
+HIST_CORRELATION_THRESHOLD = 0.9
+
 
 # -------------------------------
 # COMPARED METRICS
@@ -134,6 +136,7 @@ def compare_images(pathA, pathB):
 
     return results
 
+
 # -------------------------------
 # GET ALL MANGA
 # -------------------------------
@@ -158,8 +161,7 @@ def get_all_manga(data_dir):
 # -------------------------------
 def get_sorted_images(folder):
     files = [
-        f for f in os.listdir(folder)
-        if f.lower().endswith((".png", ".jpg", ".jpeg"))
+        f for f in os.listdir(folder) if f.lower().endswith((".png", ".jpg", ".jpeg"))
     ]
 
     # sort by filename (assuming p001, p002...)
@@ -180,7 +182,10 @@ def is_match(en_path, vi_path):
         if ssim_score is None or hist_correlation_score is None:
             return False
 
-        return ssim_score >= SSIM_THRESHOLD and hist_correlation_score >= HIST_CORRELATION_THRESHOLD
+        return (
+            ssim_score >= SSIM_THRESHOLD
+            and hist_correlation_score >= HIST_CORRELATION_THRESHOLD
+        )
 
     except Exception as e:
         print(f"⚠️ Compare error: {e}")
@@ -190,7 +195,7 @@ def is_match(en_path, vi_path):
 # -------------------------------
 # PROCESS ONE CHAPTER
 # -------------------------------
-def process_chapter(manga, chapter):
+def process_chapter(manga, chapter, log_file):
     en_path = Path(TEST_DATA_DIR) / "en" / manga / chapter
     vi_path = Path(TEST_DATA_DIR) / "vi" / manga / chapter
 
@@ -208,6 +213,9 @@ def process_chapter(manga, chapter):
 
     vi_idx = 0
 
+    unmatched_en = []
+    matched_vi_indices = set()
+
     for en_img in tqdm(en_images, desc=f"{manga}-{chapter}", leave=False):
         en_full = en_path / en_img
 
@@ -218,6 +226,7 @@ def process_chapter(manga, chapter):
 
             if is_match(str(en_full), str(vi_full)):
                 # ✅ MATCH FOUND
+                matched_vi_indices.add(j)
                 shutil.copy(en_full, out_en / en_img)
                 shutil.copy(vi_full, out_vi / vi_images[j])
 
@@ -226,20 +235,38 @@ def process_chapter(manga, chapter):
                 break
 
         if not found:
+            unmatched_en.append(en_img)
             print(f"❌ No match for {en_img}")
+
+    unmatched_vi = [
+        vi_images[i] for i in range(len(vi_images)) if i not in matched_vi_indices
+    ]
+
+    if unmatched_en or unmatched_vi:
+        log_file.write(f"{manga} / {chapter}\n")
+        log_file.write(f"EN unmatched: {unmatched_en}\n")
+        log_file.write(f"VI unmatched: {unmatched_vi}\n\n")
 
 
 # -------------------------------
 # MAIN
 # -------------------------------
 def main():
+    # reset log file
     print("🔍 Starting EN-VI alignment...")
+
+    LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with open(LOG_FILE, "w", encoding="utf-8") as f:
+        f.write("UNMATCHED PAGES LOG\n\n")
 
     manga_list = get_all_manga(TEST_DATA_DIR)
 
-    for manga, chapter in tqdm(manga_list, desc="Processing manga"):
+    progress_bar = tqdm(manga_list, desc="Processing chapters")
+    for manga, chapter in progress_bar:
+        progress_bar.set_description(f"Processing {manga}/{chapter}")
         try:
-            process_chapter(manga, chapter)
+            with open(LOG_FILE, "a", encoding="utf-8") as log_f:
+                process_chapter(manga, chapter, log_f)
         except Exception as e:
             tqdm.write(f"❌ Error: {manga}/{chapter} | {e}")
 
