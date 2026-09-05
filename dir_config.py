@@ -17,6 +17,7 @@ MAGI_IMAGE_RESULT = "magi_image_results"
 FIX_VI_OCR_OUTPUT_EASYOCR_VIETOCR = "easy_ocr_viet_ocr_result"
 FIX_VI_OCR_OUTPUT_GOOGLE_LENS = "google_lens_ocr_result"
 CSV_OUTPUT = "csv_output"
+RAW_UNMATCHED_ONLY_DIR = DATA_DIR / "raw_unmatched_only"
 TEST_DATA_MATCHED_ONLY_DIR = DATA_DIR / "test_data_matched_only"
 
 
