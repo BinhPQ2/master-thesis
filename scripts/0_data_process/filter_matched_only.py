@@ -22,7 +22,7 @@ try:
     from skimage.metrics import structural_similarity as ssim
 except Exception:
     ssim = None
-LOG_FILE = Path(TEST_DATA_UNDUPED_DIR) / "log.txt"
+LOG_FILE = Path(TEST_DATA_MATCHED_ONLY_DIR) / "log.txt"
 
 # -------------------------------
 # CONFIG (TUNE HERE)
@@ -202,8 +202,8 @@ def process_chapter(manga, chapter, log_file):
     if not en_path.exists() or not vi_path.exists():
         return
 
-    out_en = Path(TEST_DATA_UNDUPED_DIR) / "en" / manga / chapter
-    out_vi = Path(TEST_DATA_UNDUPED_DIR) / "vi" / manga / chapter
+    out_en = Path(TEST_DATA_MATCHED_ONLY_DIR) / "en" / manga / chapter
+    out_vi = Path(TEST_DATA_MATCHED_ONLY_DIR) / "vi" / manga / chapter
 
     out_en.mkdir(parents=True, exist_ok=True)
     out_vi.mkdir(parents=True, exist_ok=True)
