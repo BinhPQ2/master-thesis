@@ -4,7 +4,7 @@ from torch import fix_
 
 ROOT = Path(__file__).resolve().parent  # project root
 DATA_DIR = ROOT / "data"
-RAW_DIR = DATA_DIR / "raw_processed"
+RAW_DIR = DATA_DIR / "raw"
 TEST_DATA_DIR = DATA_DIR / "test_data"
 RESULT_DIR = ROOT / "results"
 MODELS_DIR = ROOT / "models"
