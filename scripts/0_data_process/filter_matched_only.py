@@ -22,8 +22,6 @@ try:
 except Exception:
     ssim = None
 
-LOG_FILE = Path(TEST_DATA_MATCHED_ONLY_DIR) / "log.txt"
-
 # -------------------------------
 # MATCHED CRITERIA CONFIG (TUNE HERE)
 # -------------------------------
@@ -230,7 +228,7 @@ def is_match(en_path, vi_path):
 # -------------------------------
 # PROCESS ONE CHAPTER
 # -------------------------------
-def process_chapter(input_dir, output_dir, manga, chapter, log_file):
+def process_chapter(input_dir, output_dir, manga, chapter, manga_index, log_file):
     en_path = Path(input_dir) / "en" / manga / chapter
     vi_path = Path(input_dir) / "vi" / manga / chapter
 
@@ -281,6 +279,7 @@ def process_chapter(input_dir, output_dir, manga, chapter, log_file):
     ]
 
     if unmatched_en or unmatched_vi:
+        log_file.write(f"Manga index: {manga_index}\n")
         log_file.write(f"{manga} / {chapter}\n")
         log_file.write(f"EN unmatched: {unmatched_en}\n")
         log_file.write(f"VI unmatched: {unmatched_vi}\n\n")
@@ -296,25 +295,40 @@ def main():
 
     # Define range slice: e.g. [0, 20] scans items 0 to 19.
     # Set to [] to scan everything.
-    input_range = []
+    input_range = [133,150]
 
-    LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with open(LOG_FILE, "w", encoding="utf-8") as f:
+    UNMATCHED_LOG_FILE = Path(output_dir) / "unmatched_log.txt"
+    FINISHED_LOG_FILE = Path(output_dir) / "finished_log.txt"
+    UNMATCHED_LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with open(UNMATCHED_LOG_FILE, "w", encoding="utf-8") as f:
         f.write("UNMATCHED PAGES LOG\n\n")
+    with open(FINISHED_LOG_FILE, "w", encoding="utf-8") as f:
+        f.write("Last finished manga index: -1\n")
 
-    manga_list = get_all_manga(TEST_DATA_DIR)
+    manga_list = list(enumerate(get_all_manga(input_dir)))
     manga_list = filter_by_range(manga_list, input_range)
+    print("manga_list:", manga_list)
 
     print(f"📋 Processing {len(manga_list)} total items based on range criteria.")
 
-    progress_bar = tqdm(manga_list, desc="Processing chapters")
-    for manga, chapter in progress_bar:
-        progress_bar.set_description(f"Processing {manga}/{chapter}")
-        try:
-            with open(LOG_FILE, "a", encoding="utf-8") as log_f:
-                process_chapter(input_dir, output_dir, manga, chapter, log_f)
-        except Exception as e:
-            tqdm.write(f"❌ Error: {manga}/{chapter} | {e}")
+    # progress_bar = tqdm(manga_list, desc="Processing chapters")
+    # for manga_index, (manga, chapter) in progress_bar:
+    #     progress_bar.set_description(f"Processing {manga}/{chapter}")
+    #     try:
+    #         with open(UNMATCHED_LOG_FILE, "a", encoding="utf-8") as log_f:
+    #             process_chapter(
+    #                 input_dir,
+    #                 output_dir,
+    #                 manga,
+    #                 chapter,
+    #                 manga_index,
+    #                 log_f,
+    #             )
+    #     except Exception as e:
+    #         tqdm.write(f"❌ Error: {manga}/{chapter} | {e}")
+    #     else:
+    #         with open(FINISHED_LOG_FILE, "w", encoding="utf-8") as finished_f:
+    #             finished_f.write(f"Last finished manga index: {manga_index}\n")
 
     print("\n🎉 DONE!")
 
